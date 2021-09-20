@@ -1,2 +1,2 @@
 # TypingPractice
-C++ application for practising typing speed.
+Python application for practising typing speed.
