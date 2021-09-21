@@ -1,6 +1,5 @@
-from collections import deque
 from tkinter import *
-from random import sample, shuffle, choice
+from random import sample,  choice
 from timeit import default_timer as timer
 
 
@@ -149,4 +148,8 @@ y = (hs / 2) - (h / 2)
 root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 app = Application(root)
+menubar = Menu(root)
+menubar.add_command(label='File')
+menubar.add_command(label='Edit')
+root.config(menu=menubar)
 app.mainloop()
