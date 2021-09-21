@@ -40,6 +40,12 @@ class Statistics:
     def get_mean(self):
         return self.lastspeed
 
+    def reset(self):
+        self.lastspeed = 0
+        self.lasttime = 0
+        self.samplesize = 0
+        self.started = False
+
 
 class Application(Frame):
     def __init__(self, master):
@@ -54,26 +60,48 @@ class Application(Frame):
         self.text = StringVar()
         self.text.set(self.dict.sample_words(10))
 
-        self.text_field = Message(
-            self, bg='papayawhip', fg='black', textvariable=self.text,
-            font=("Courier", 14), anchor='s', width=500, justify='left')
-        self.text_field.pack(ipadx=10, ipady=10, expand=True, fill='both')
+        self.text_frame = Frame(self, bg='papayawhip')
+        self.text_frame.pack(ipadx=10, ipady=10, expand=True, fill='both')
 
-        self.input_frame = Frame(self)
+        self.text_field = Label(
+            self.text_frame, bg='papayawhip', fg='black', textvariable=self.text,
+            font=("Courier", 16), anchor='sw', width=500, justify='left')
+        self.text_field.pack(padx=(120, 120), fill='both', side='bottom')
+
+        self.input_frame = Frame(self, bg='wheat')
         self.input_frame.pack(fill='both', expand=True)
 
         self.input_field = Entry(
             self.input_frame, width=40, font=("Courier", 14))
         self.input_field.pack(ipadx=10, ipady=10)
 
-        self.time_field = Label(self.input_frame, font=("Times New Roman", 14))
+        self.time_field = Label(self.input_frame, font=(
+            "Times New Roman", 14), bg='wheat', text='0.00 WPM')
         self.time_field.pack(padx=10, pady=10)
+
+        self.pause_button = Button(
+            self.input_frame, command=self.pause_pressed, text="Pause", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
+        self.pause_button.pack(pady=5)
+
+        self.reset_button = Button(
+            self.input_frame, command=self.reset_pressed, text="Reset", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
+        self.reset_button.pack(pady=5)
 
         self.input_field.bind("<space>", self.space_pressed)
         self.input_field.bind("<BackSpace>", self.backspace_pressed)
         self.input_field.bind("<Key>", self.key_pressed)
 
         self.input_field.focus()
+
+    def pause_pressed(self):
+        self.focus()
+        self.stats.started = False
+
+    def reset_pressed(self):
+        self.focus()
+        self.text.set(self.dict.sample_words(10))
+        self.stats.reset()
+        self.clear_text()
 
     def space_pressed(self, event):
         (first, rest) = self.text.get().split(maxsplit=1)
@@ -111,7 +139,14 @@ class Application(Frame):
 
 root = Tk()
 root.title('Typing practice')
-root.geometry("720x480")
+w = 720
+h = 480
+ws = root.winfo_screenwidth()
+hs = root.winfo_screenheight()
+x = (ws / 2) - (w / 2)
+y = (hs / 2) - (h / 2)
+
+root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 app = Application(root)
 app.mainloop()
