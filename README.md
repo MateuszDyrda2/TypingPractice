@@ -1,5 +1,5 @@
 # TypingPractice
-Very simple Python application for practising typing speed.  
+Very simple Python application for practicing typing speed.  
 List of the common words used for the application was taken from: www.wordfrequency.info
 ![AppScreen](/images/app_screen.png)
 ## Requirements
