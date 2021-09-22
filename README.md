@@ -1,7 +1,7 @@
 # TypingPractice
 Very simple Python application for practising typing speed.  
 List of the common words used for the application was taken from: www.wordfrequency.info
-
+![AppScreen](/images/app_screen.png)
 ## Requirements
 * Python 3.x
 * tkinter
