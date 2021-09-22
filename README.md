@@ -7,5 +7,5 @@ Very simple Python application for practising typing speed.
 
 ## Usage
 To run, type 
-`python app.py`
+`python typing_practice.py`
 into terminal
