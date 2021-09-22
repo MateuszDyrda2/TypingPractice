@@ -51,7 +51,7 @@ class Application(Frame):
         super().__init__(master)
         self.master = master
         self.pack(side='top', fill='both', expand=True)
-        self.dict = Dict("resources/pop_dict.txt")
+        self.dict = Dict("resources/dictionary.txt")
         self.stats = Statistics()
         self.create_widgets()
 
