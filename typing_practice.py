@@ -7,7 +7,7 @@ class Dict:
     def __init__(self, filename):
         self.words = []
         with open(filename) as file:
-            next(file)
+            next(file)  # discard the first line as it is a source
             self.words = [line.strip() for line in file]
 
     def get_next(self):
@@ -19,10 +19,10 @@ class Dict:
 
 class Statistics:
     def __init__(self):
-        self.lasttime = 0
-        self.lastspeed = 0
-        self.samplesize = 0
-        self.started = False
+        self.lasttime = 0  # time since the current word was started
+        self.lastspeed = 0  # the average of the WPM
+        self.samplesize = 0  # number of recorded words
+        self.started = False  # is the timer running
 
     def start(self):
         self.lasttime = timer()
@@ -57,9 +57,10 @@ class Application(Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.text = StringVar()
+        self.text = StringVar()  # editable text variable
         self.text.set(self.dict.sample_words(10))
 
+        # frame for placing the text
         self.text_frame = Frame(self, bg='papayawhip')
         self.text_frame.pack(ipadx=10, ipady=10, expand=True, fill='both')
 
@@ -68,6 +69,7 @@ class Application(Frame):
             font=("Courier", 16), anchor='sw', width=500, justify='left')
         self.text_field.pack(padx=(120, 120), fill='both', side='bottom')
 
+        # frame for the rest of the UI
         self.input_frame = Frame(self, bg='wheat')
         self.input_frame.pack(fill='both', expand=True)
 
@@ -87,32 +89,37 @@ class Application(Frame):
             self.input_frame, command=self.reset, text="Reset", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
         self.reset_button.pack(pady=5)
 
+        # input field bindings
         self.input_field.bind("<space>", self.space_pressed)
         self.input_field.bind("<BackSpace>", self.backspace_pressed)
         self.input_field.bind("<Key>", self.key_pressed)
 
+        # when the application starts, it should be automatically
+        # focused on the input field
         self.input_field.focus()
 
     def space_pressed(self, event):
+        # get the first word from the word list
         (first, rest) = self.text.get().split(maxsplit=1)
 
         if first != self.input_field.get():
-            self.flash_red()
+            self.flash_red()  # the word typed and from the list don't matc
         else:
-            self.stats.record(first)
+            self.stats.record(first)  # save stats from the current word
+            # get a new random word
             self.text.set(rest + ' ' + self.dict.get_next())
             self.time_field["text"] = "{:.2f}".format(
-                self.stats.get_mean()) + " WPM"
-            self.clear_text()
-        return "break"
+                self.stats.get_mean()) + " WPM"  # display new WPM
+            self.clear_text()  # clear the input field
+        return "break"  # don't add new space
 
     def backspace_pressed(self, event):
-        if event.state & 0x0004:
+        if event.state & 0x0004:  # check for CTRL + BACKSPACE
             self.clear_text()
             return "break"
 
     def key_pressed(self, event):
-        if(self.stats.started == False):
+        if(self.stats.started == False):  # if the timer is not started, start it
             self.stats.start()
 
     def clear_text(self):
@@ -132,6 +139,7 @@ class Application(Frame):
 
     def reset(self):
         self.focus()
+        # sample new 10 word from the list
         self.text.set(self.dict.sample_words(10))
         self.stats.reset()
         self.clear_text()
@@ -139,12 +147,10 @@ class Application(Frame):
 
 root = Tk()
 root.title('Typing practice')
-w = 720
-h = 480
-ws = root.winfo_screenwidth()
-hs = root.winfo_screenheight()
-x = (ws / 2) - (w / 2)
-y = (hs / 2) - (h / 2)
+w, h = 720, 480  # window width and height
+ws, hs = root.winfo_screenwidth(), root.winfo_screenheight()  # screen width and height
+# calculated position in a middle of the screen
+x, y = (ws / 2) - (w / 2), (hs / 2) - (h / 2)
 
 root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
