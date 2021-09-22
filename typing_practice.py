@@ -7,6 +7,7 @@ class Dict:
     def __init__(self, filename):
         self.words = []
         with open(filename) as file:
+            next(file)
             self.words = [line.strip() for line in file]
 
     def get_next(self):
