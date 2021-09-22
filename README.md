@@ -1,6 +1,5 @@
 # TypingPractice
-Python application for practising typing speed.
-
+Very simple Python application for practising typing speed.
 
 ## Requirements
 * Python 3.x
@@ -8,5 +7,5 @@ Python application for practising typing speed.
 
 ## Usage
 To run, type 
-> python app.py
+`python app.py`
 into terminal
