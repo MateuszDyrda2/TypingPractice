@@ -51,7 +51,7 @@ class Application(Frame):
         super().__init__(master)
         self.master = master
         self.pack(side='top', fill='both', expand=True)
-        self.dict = Dict("pop_dict.txt")
+        self.dict = Dict("resources/pop_dict.txt")
         self.stats = Statistics()
         self.create_widgets()
 
@@ -72,18 +72,18 @@ class Application(Frame):
 
         self.input_field = Entry(
             self.input_frame, width=40, font=("Courier", 14))
-        self.input_field.pack(ipadx=10, ipady=10)
+        self.input_field.pack(padx=120, fill='both', ipady=10)
 
         self.time_field = Label(self.input_frame, font=(
             "Times New Roman", 14), bg='wheat', text='0.00 WPM')
         self.time_field.pack(padx=10, pady=10)
 
         self.pause_button = Button(
-            self.input_frame, command=self.pause_pressed, text="Pause", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
+            self.input_frame, command=self.pause, text="Pause", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
         self.pause_button.pack(pady=5)
 
         self.reset_button = Button(
-            self.input_frame, command=self.reset_pressed, text="Reset", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
+            self.input_frame, command=self.reset, text="Reset", font=("Times New Roman", 14), bg='tan', activebackground='wheat')
         self.reset_button.pack(pady=5)
 
         self.input_field.bind("<space>", self.space_pressed)
@@ -91,16 +91,6 @@ class Application(Frame):
         self.input_field.bind("<Key>", self.key_pressed)
 
         self.input_field.focus()
-
-    def pause_pressed(self):
-        self.focus()
-        self.stats.started = False
-
-    def reset_pressed(self):
-        self.focus()
-        self.text.set(self.dict.sample_words(10))
-        self.stats.reset()
-        self.clear_text()
 
     def space_pressed(self, event):
         (first, rest) = self.text.get().split(maxsplit=1)
@@ -135,6 +125,16 @@ class Application(Frame):
 
         self.after(500, self.change_back)
 
+    def pause(self):
+        self.focus()
+        self.stats.started = False
+
+    def reset(self):
+        self.focus()
+        self.text.set(self.dict.sample_words(10))
+        self.stats.reset()
+        self.clear_text()
+
 
 root = Tk()
 root.title('Typing practice')
@@ -149,7 +149,14 @@ root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 app = Application(root)
 menubar = Menu(root)
-menubar.add_command(label='File')
-menubar.add_command(label='Edit')
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="Pause", command=app.pause)
+filemenu.add_command(label="Reset", command=app.reset)
+
+filemenu.add_separator()
+filemenu.add_command(label="Exit", command=root.quit)
+menubar.add_cascade(label="File", menu=filemenu)
+
+root.iconphoto(False, PhotoImage(file="resources/icon.png"))
 root.config(menu=menubar)
 app.mainloop()
